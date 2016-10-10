@@ -1,3 +1,4 @@
+%This knitr document is called by the knit2pdf call in 5_createMetadata.r
 \documentclass{article}
 \usepackage[utf8]{inputenc} 
 \usepackage{geometry}
@@ -6,7 +7,7 @@
 \pagestyle{fancy} \fancyhf{} \renewcommand\headrulewidth{0pt} %strip default header/footer stuff
 %add a center footer
 \cfoot{\small   %small font
-The New York Natural Heritage Program, 625 Broadway, Albany NY 12233-4757. www.nynhp.org
+Distribution modeling by the Eastern Heritage Program Coalition
 \normalsize} %return the font to normal
 \geometry{letterpaper, top=0.45in, bottom=0.75in, left=0.75in, right=0.75in}
 
@@ -52,7 +53,7 @@ The New York Natural Heritage Program, 625 Broadway, Albany NY 12233-4757. www.n
 This SDM incorporates the number of known and background locations
 indicated in Table 1, modeled with the random forests 
 routine \cite{breiman2001, iverson2004} in the R statistical environment 
-\cite{liaw2002, r291}. We validated the model by jackknifing 
+\cite{liaw2002, r}. We validated the model by jackknifing 
 (also called leave-one-out, see
 \cite{fielding1997, fielding2002, pearson2007})
 by \Sexpr{as.character(group$JackknType)} for a total of \Sexpr{length(group$vals)} groups.
@@ -311,9 +312,9 @@ with barplots.
 Important! Element distribution models map places of similar environmental
 conditions to the submitted locations (PR points). No model will ever depict sites where
 a targeted element will occur with certainty, it can \textit{only} depict locations it interprets
-as appropriate habitat for the targeted element. EDMs can be used in many ways and the 
+as appropriate habitat for the targeted element. SDMs can be used in many ways and the 
 depiction of appropriate habitat should be varied depending on intended use. For targeting
-field surveys, an EDM may be used to refine the search area; users should always employ
+field surveys, an SDM may be used to refine the search area; users should always employ
 additional GIS tools to further direct search efforts. A lower cutoff depicting more land area
 such as that derived from the validation ROC plots (\Sexpr{round(cutval.rf[2],3)}) may be 
 appropriate to use in this case. For a more conservative depiction of suitable habitat that
@@ -334,17 +335,16 @@ References
     Tree Analysis. Landscape ecology of trees and forests.Proceedings of the 
     twelfth annual IALE (UK) conference, Cirencester, UK, 21-24 June 2004 317-320.
   \bibitem{liaw2002} Liaw, A. and M. Wiener. 2002. Classification and 
-    regression by randomForest. R News 2:18-22.
-  \bibitem{r291} R Development Core Team. 2009. R: A language and environment 
-    for statistical computing. 2009. R Foundation 
-    for Statistical Computing, Vienna, Austria. ISBN 3-900051-07-0, URL http://www.R-project.org.    
+    regression by randomForest. R News 2:18-22. Version \Sexpr{packageDescription("randomForest")$Version}.
+  \bibitem{r} R Core Team. 2016. R: A language and environment for statistical computing. 
+    R Foundation for Statistical Computing, Vienna, Austria. URL https://www.R-project.org/. \Sexpr{R.version.string}.
   \bibitem{fielding1997} Fielding, A. H. and J. F. Bell. 1997. 
     A review of methods for the assessment of prediction errors in 
     conservation presence/absence models. Environmental Conservation 24:38-49.
   \bibitem{fielding2002} Fielding, A. H. 2002. What are the appropriate
     characteristics of an accuracy measure? Pages 271-280 in Predicting Species
-    Occurrences, issues of accuracy and scale. J. M. Scott, P. J. Helglund, M. L. Morrison,
-    J. B. Haufler, M. G. Raphael, W. A. Wall, F. B. Samson, eds. Island Press, Washington.
+    Occurrences, issues of accuracy and scale. J. M. Scott, P. J. Helglund, M. 
+    L. Morrison, J. B. Haufler, M. G. Raphael, W. A. Wall, F. B. Samson, eds. Island Press, Washington.
   \bibitem{pearson2007} Pearson, R.G. 2007. Species Distribution Modeling for 
     Conservation Educators and Practitioners. Synthesis. 
     American Museum of Natural History. Available at http://ncep.amnh.org.
@@ -359,12 +359,59 @@ References
     21(20):3940-3941.
 \end{thebibliography}
 \normalsize
-Please cite this document and its associated EDM as: \\
-New York Natural Heritage Program \Sexpr{format(Sys.Date(), "%Y")}. Element distribution
-model, model validation, and environmental variable importance 
-for \textit{\Sexpr{as.character(ElementNames[[1]])}}. Albany, NY. 
+
+\pagebreak
+\medskip
+<<mapFig, fig.width=5, fig.height=3, include=FALSE, echo=FALSE>>=
+
+#aspRatio <- ras@nrows/ras@ncols 
+#pall <- colorRampPalette(brewer.pal(9,"Blues"))(30)
+#image(ras, col = pall, xaxt = "n", yaxt = "n", xlab = "", ylab = "", asp = aspRatio)
+#plot(bnds, add = TRUE)
+#box()
+
+
+#try with shapefiles
+library(rgdal)
+library(ggplot2)
+library(ggmap)
+library(raster)
+
+stateBoundPath <- "X:/RegionalSDM/zz_testArea/other_spatial"
+extentmap <- readOGR(stateBoundPath, "StatesNE")
+region <- fortify(extentmap)
+#get the prediction
+map <- raster("X:/RegionalSDM/zz_testArea/outputs/grids/sciranci.tif")
+map.p <- rasterToPoints(map) # convert the raster to points. Is there a better way???
+
+#Make the points a dataframe for ggplot
+df <- data.frame(map.p)
+#Make appropriate column headings
+colnames(df) <- c("Longitude", "Latitude", "MAP") #MAP in this case refers to mean annual precip... got to change
+
+p <- ggplot(data=df, aes(y=Latitude, x=Longitude)) + 
+     geom_raster(data=df, aes(fill=MAP)) +
+     geom_polygon(data = region, aes(x=long, y=lat, group=group), color="gray", size=0.05,fill=NA) +
+     labs(title = "Predicted Probability of Presence",fill="") +
+     #scale_fill_gradient("probability", limits=c(0,1)) + #able for the legend
+     scale_fill_distiller(palette = "Reds", direction=1) +
+     #guides(fill = guide_legend(reverse=TRUE)) +
+     coord_fixed(expand=TRUE) + #possibly a better way of doing this, but this squared up the map
+     theme_nothing(legend=TRUE) # gets rid of the background grid
+
+# plot the map
+p
+#ggsave(p, file = "map5.png", width = 5, height = 4.5, type = "cairo-png")
+
+@
+\includegraphics{figure/mapFig-1.pdf} \\   
+
+Figure 5. A coarse representation of the model, predicted throughout the study area. State Boundaries are shown in black. 
+
+\smallskip
+Please cite this document and its associated SDM as: \\
+Regional Distribution Modeling Project \Sexpr{format(Sys.Date(), "%Y")}. Species distribution model, model validation, and environmental variable importance 
+for \textit{\Sexpr{as.character(ElementNames[[1]])}}.  
 Created on \Sexpr{format(Sys.Date(), "%d %b %Y")}.
 
 \end{document}
-
-
