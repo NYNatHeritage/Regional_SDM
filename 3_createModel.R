@@ -1,5 +1,9 @@
 # File: 3_createModel.R
-# Purpose: to create the random forest model
+# Purpose: to create the random forest model. This includes:
+# - create initial model to remove poorest performing env vars
+# - validate using leave-one-out jackknifing
+# - create a final model using all presence points
+# - build partial plots of top performing env vars for metadata output
 
 # assumptions:
 # input table contains only one species
@@ -15,44 +19,76 @@ library(randomForest)
 #  Lines that require editing
 #
 # directory for file locations
-dataLocation <- "G:/SDM_test/output"
-setwd(dataLocation)
+sppPtLoc <- "D:/RegionalSDM/inputs/species/glypmuhl/point_data"
+ranPtLoc <- "D:/RegionalSDM/inputs/background"
+dbLoc <- "D:/RegionalSDM/databases"
+pathToRas <- "D:/RegionalSDM/env_vars/nativeR"
+
+setwd(sppPtLoc)
 
 # directory for saving RData files (analysis data)
-rdataOut <- "G:/SDM_test/RDataFiles"
+rdataOut <- "D:/RegionalSDM/outputs"
 
 # the names of the files to be uploaded: presence points
 df.in <-read.dbf("glypmuhl_att.dbf")
 
 # absence points
-df.abs <- read.dbf("testArea_att.dbf")
+df.abs <- read.dbf(paste(ranPtLoc,"clpBnd_SDM_RanPt_att.dbf", sep="/"))
 
 #  End, lines that require editing
+#
 #####
 
 # add some fields to each
 df.in <- cbind(df.in, pres=1)
-df.abs <- cbind(df.abs, stratum="pseu-a", EO_ID=99999, 
-					pres=0, ERACCURACY="High", scien_name="background")
+df.abs <- cbind(df.abs, EO_ID_ST=99999, 
+					pres=0, RA="High", SNAME="background")
+
+df.abs$stratum <- "pseu-a"
 
 ##lower case column names
 names(df.in) <- tolower(names(df.in))
 names(df.abs) <- tolower(names(df.abs))
 
-#remove nulls
-df.abs<-df.abs[complete.cases(df.abs),]
-df.in<-df.in[complete.cases(df.in),]
+# get a list of env vars from the folder used to create the raster stack
+raslist <- list.files(path = pathToRas, pattern = ".grd$")
+rasnames <- gsub(".grd", "", raslist)
+
+# are these all in the lookup database? Will create problems later if not
+db_file <- paste(dbLoc, "SDM_lookupAndTracking.sqlite", sep = "/")
+db <- dbConnect(SQLite(),dbname=db_file)  
+op <- options("useFancyQuotes") 
+options(useFancyQuotes = FALSE) #sQuote call unhappy with fancy quote, turn off
+SQLquery <- paste("SELECT gridName, fullName FROM lkpEnvVars WHERE gridName in (", 
+                  toString(sQuote(rasnames)),
+                  "); ", sep = "")
+namesInDB <- dbGetQuery(db, statement = SQLquery)
+
+#note the query is case sensitive, we should probably fix that (COLLATE NOCASE)
+namesInDB$gridName <- tolower(namesInDB$gridName)
+rasnames <- tolower(rasnames)
+
+## this prints rasters not in the lookup database
+## if blank you are good to go, otherwise figure out what's up
+rasnames[!rasnames %in% namesInDB$gridName]
+
+## this prints out the rasters that don't appear as a column name
+## in df.in (meaning it wasn't used to attribute or the name is funky)
+## if blank you are good to go
+rasnames[!rasnames %in% names(df.in)]
+
+##clean up
+options(op)
+dbDisconnect(db)
 
 #this is the full list of fields, arranged appropriately
-## TODO: obviously this will change (and be very long) when we have all env. variables
-colList <- c("scien_name","eo_id","pres","stratum", "eraccuracy",
-	"awc_mm09","canopy01","discal09", 
-	"tmin13n09"
-	)
+
+colList <- c("sname","eo_id_st","pres","stratum", "ra", rasnames)
+
 # if colList gets modified, 
 # also modify the locations for the independent and dependent variables, here
 depVarCol <- 3
-indVarCols <- c(6:9)
+indVarCols <- c(6:length(colList))
 
 # create a list of definitions for each envar that is a factor
 # factor.defs <- list(
@@ -67,12 +103,15 @@ indVarCols <- c(6:9)
 df.in <- df.in[,colList]
 df.abs <- df.abs[,colList]
 
+#remove nulls
+df.abs<-df.abs[complete.cases(df.abs),]
+df.in<-df.in[complete.cases(df.in),]
+
 #Fire up SQLite
-db_file <- "F:/_Howard/git/Regional_SDM/SDM_lookupAndTracking.sqlite"
 db <- dbConnect(SQLite(),dbname=db_file)  
   
 ElementNames <- as.list(c(SciName="",CommName="",Code="",Type=""))
-ElementNames[1] <- as.character(df.in[1,"scien_name"])
+ElementNames[1] <- as.character(df.in[1,"sname"])
 
 ##get the names used in metadata output
 # populate the code field
@@ -91,7 +130,7 @@ ElementNames
 dbDisconnect(db)
 
 ##row bind the pseudo-absences with the presence points
-df.abs$eo_id <- factor(df.abs$eo_id)
+df.abs$eo_id_st <- factor(df.abs$eo_id_st)
 df.full <- rbind(df.in, df.abs)
 
 # ##make factors using definitions set up earlier
@@ -102,70 +141,115 @@ df.full <- rbind(df.in, df.abs)
 
 #reset these factors to remove values from other species 
 df.full$stratum <- factor(df.full$stratum)
-df.full$eo_id <- factor(df.full$eo_id)
+df.full$eo_id_st <- factor(df.full$eo_id_st)
 df.full$pres <- factor(df.full$pres)
+df.full$ra <- factor(df.full$ra)
+df.full$sname <- factor(df.full$sname)
 	
+##
+# tune mtry (full model)
+# run through mtry twice
+
+x <- tuneRF(df.full[,indVarCols],
+             y=df.full[,depVarCol],
+             ntreeTry = 50, stepFactor = 2, mtryStart = 6)
+
+newTry <- x[x[,2] == min(x[,2]),1]
+
+y <- tuneRF(df.full[,indVarCols],
+            y=df.full[,depVarCol],
+            ntreeTry = 50, stepFactor = 1.5, mtryStart = max(newTry))
+
+mtry <- max(y[y[,2] == min(y[,2]),1])
+
+rm(x,y)
+
+#####
+##
+# code below is for removing least important env vars
+# we need to discuss value in applying. Probably try both ways?
+##
+#####
+
+ntrees <- 1000
+rf.find.envars <- randomForest(df.full[,indVarCols],
+                        y=df.full[,depVarCol],
+                        importance=TRUE,
+                        ntree=ntrees,
+                        mtry=mtry)
+
+impvals <- importance(rf.find.envars, type = 1)
+# here, choosing above 25% percentile
+y <- quantile(impvals, probs = 0.25)
+impEnvVars <- impvals[impvals > y,]
+#which columns are these, then flip the non-envars to TRUE
+impEnvVarCols <- names(df.full) %in% names(impEnvVars)
+impEnvVarCols[1:5] <- TRUE
+#subset!
+df.full <- df.full[,impEnvVarCols]
+#reset the indvarcols object
+indVarCols <- c(6:length(names(df.full)))
+
+#####
+##
+# code above is for removing least important env vars
+##
+#####
+
+
 #now that entire set is cleaned up, split back out to use any of the three DFs below
 df.in2 <- subset(df.full,pres == "1")
 df.abs2 <- subset(df.full, pres == "0")
 df.in2$stratum <- factor(df.in2$stratum)
 df.abs2$stratum <- factor(df.abs2$stratum)
-df.in2$eo_id <- factor(df.in2$eo_id)
-df.abs2$eo_id <- factor(df.abs2$eo_id)
+df.in2$eo_id_st <- factor(df.in2$eo_id_st)
+df.abs2$eo_id_st <- factor(df.abs2$eo_id_st)
 df.in2$pres <- factor(df.in2$pres)
 df.abs2$pres <- factor(df.abs2$pres)
-	
+
 #reset the row names, needed for random subsetting method of df.abs2, below
 row.names(df.in2) <- 1:nrow(df.in2)
 row.names(df.abs2) <- 1:nrow(df.abs2)
 
-### RF ###
-#TODO: consider custom tuning of mtry for each run
-
-##### set mtry
-mtry <- 5
-#####
 
 #how many polygons do we have?
 numPys <-  nrow(table(df.in2$stratum))
 #how many EOs do we have?
-numEOs <- nrow(table(df.in2$eo_id))
+numEOs <- nrow(table(df.in2$eo_id_st))
 
 #initialize the grouping list, and set up grouping variables
 #if we have fewer than 10 EOs, move forward with jackknifing by polygon, otherwise
 #jackknife by EO.
 group <- vector("list")
-group$colNm <- ifelse(numEOs < 10,"stratum","eo_id")
+group$colNm <- ifelse(numEOs < 10,"stratum","eo_id_st")
 group$JackknType <- ifelse(numEOs < 10,"polygon","element occurrence")
 if(numEOs < 10) {
 		group$vals <- unique(df.in2$stratum)
-		} else {
-		group$vals <- unique(df.in2$eo_id)
-		}
+} else {
+		group$vals <- unique(df.in2$eo_id_st)
+}
 
-
-# # reduce the number of groups, if there are more than 100, to 100 groups
+# # reduce the number of groups, if there are more than 200, to 200 groups
 # # this groups the groups simply if they are adjacent in the order created above.
 # #  -- the routine runs out of memory if groups go over about 250 (WinXP 32 bit, 3GB avail RAM)
-# if(length(group$vals) > 100) {
-	# in.cut <- cut(1:length(group$vals), b = 100)
-	# in.split <- split(group$vals, in.cut)
-	# names(in.split) <- NULL 
-	# group$vals <- in.split	
-	# group$JackknType <- paste(group$JackknType, ", grouped to 100 levels,", sep = "")	
-# }		
+# if(length(group$vals) > 200) {
+#   in.cut <- cut(1:length(group$vals), b = 200)
+#   in.split <- split(group$vals, in.cut)
+#   names(in.split) <- NULL
+#   group$vals <- in.split
+#   group$JackknType <- paste(group$JackknType, ", grouped to 200 levels,", sep = "")
+# }
 	
 #reduce the number of trees if group$vals has more than 15 entries
 #this is for validation
 if(length(group$vals) > 30) {
 	ntrees <- 500
-	} else {
+} else {
 	ntrees <- 750
 }
 ###### reduced for testing #####
 ### TODO: clear when running real models
-ntrees <- 200
-
+#ntrees <- 50
 
 ##initialize the Results vectors for output from the jackknife runs
 trRes <- vector("list",length(group$vals))
@@ -199,9 +283,9 @@ v.rocr.pred <- vector("list",length(group$vals))
 
 #######
 ## This is the validation loop.
-## it creates a model for all-but-one polygon,
-## tests if it can predict that polygon left out,
-## then moves on to another poly, cycling though all polygons (groups)
+## it creates a model for all-but-one group (EO, polygon, or group),
+## tests if it can predict that group left out,
+## then moves on to another group, cycling though all groups
 ## Validation stats in tabular form are the final product.
 #######
       
@@ -228,8 +312,8 @@ if(length(group$vals)>1){
 									 importance=TRUE,ntree=ntrees,mtry=mtry)
 		   # run a randomForest predict on the validation data
 		  evRes[[i]] <- predict(trRes[[i]], evSet[[i]], type="prob")
-		   # use ROCR to structure the data
-		  v.rocr.pred[[i]] <- prediction(evRes[[i]][,2],evSet[[i]]$pres)
+		   # use ROCR to structure the data. Get pres col of evRes (= named "1")
+		  v.rocr.pred[[i]] <- prediction(evRes[[i]][,"1"],evSet[[i]]$pres)
 		   # extract the auc for metadata reporting
 		  v.rocr.auc[[i]] <- performance(v.rocr.pred[[i]], "auc")@y.values[[1]]
 			cat("finished run", i, "of", length(group$vals), "\n")
@@ -299,11 +383,14 @@ if(length(group$vals)>1){
 	perf.avg@alpha.values <- list( alpha.values )
 
 	# find the best cutoff based on the averaged ROC curve
+	### TODO: customize/calculate this for each model rather than
+	### average? Use f-measure?
 	cutpt <- which.max(abs(perf.avg@x.values[[1]]-perf.avg@y.values[[1]]))
 	cutval <- perf.avg@alpha.values[[1]][cutpt]
 	cutX <- perf.avg@x.values[[1]][cutpt]
 	cutY <- perf.avg@y.values[[1]][cutpt]
 	cutval.rf <- c(1-cutval,cutval)
+	names(cutval.rf) <- c("0","1")
 
 	for(i in 1:length(group$vals)){
 		#apply the cutoff to the validation data
@@ -389,13 +476,17 @@ if(length(group$vals)>1){
 	cutval <- NA
 }
 
-#reduce the number of trees if number of rows exceeds 20k
-#TODO re-evaluate for this project
-if(nrow(df.full) > 20000) {
-	ntrees <- 300
-	} else {
-	ntrees <- 600
-}
+# #reduce the number of trees if number of rows exceeds 20k
+# #TODO re-evaluate for this project
+# if(nrow(df.full) > 20000) {
+# 	ntrees <- 300
+# 	} else {
+# 	ntrees <- 600
+# }
+   
+# increase the number of trees for the full model
+ntrees <- 2000
+   
 ####
 #   run the full model
 #####
@@ -416,13 +507,15 @@ db <- dbConnect(SQLite(),dbname=db_file)
 # based on quick assessment in Spring 07, set alpha to 0.01
 # TODO: re-evaluate for this project
 alph <- 0.01
-		#create the prediction object for ROCR
-rf.full.pred <- prediction(rf.full$votes[,2],df.full$pres)
+		#create the prediction object for ROCR. Get pres col from votes (=named "1")
+rf.full.pred <- prediction(rf.full$votes[,"1"],df.full$pres)
 		#use ROCR performance to get the f measure
 rf.full.f <- performance(rf.full.pred,"f",alpha = alph)
 	#extract the data out of the S4 object, then find the cutoff that maximize the F-value.
 rf.full.f.df <- data.frame(cutoff = unlist(rf.full.f@x.values),fmeasure = unlist(rf.full.f@y.values))
+rf.full.ctoff <- c(1-rf.full.f.df[which.max(rf.full.f.df$fmeasure),][["cutoff"]], rf.full.f.df[which.max(rf.full.f.df$fmeasure),][["cutoff"]])
 rf.full.ctoff <- c(1-rf.full.f.df[which.max(rf.full.f.df$fmeasure),][[1]], rf.full.f.df[which.max(rf.full.f.df$fmeasure),][[1]])
+names(rf.full.ctoff) <- c("0","1")
 rf.full.ctoff
 
 # prep the data
@@ -431,15 +524,24 @@ OutPut <- data.frame(SciName = as.character(ElementNames$SciName),
 			 ElemCode=as.character(ElementNames$Code),
 			 numValidaRuns=length(group$vals),
 			 meanValidaCutoff = cutval,
-			 fullRunCutoff = rf.full.ctoff[2],
+			 fullRunCutoff = rf.full.ctoff["1"],
 			 date = paste(Sys.Date()),
-			 time = format(Sys.time(), "%X")
+			 time = format(Sys.time(), "%X"), stringsAsFactors = FALSE
 			 )
 			 
 #write the data to the database
-dbWriteTable(db,"tblCutoffs",OutPut,append=TRUE)
-#close(Cn.MDB.out) #close connection
-#rm(Cn.MDB.out)
+# problems with dbWriteTable (from an upgrade?)
+#dbWriteTable(db,"tblCutoffs",OutPut,append=TRUE)
+op <- options("useFancyQuotes")
+options(useFancyQuotes = FALSE)
+
+tblCols <- paste(cat(toString(OutPut)), sep = ",")
+SQLq <- paste("INSERT INTO tblCutoffs (", toString(names(OutPut)), 
+              ") VALUES (", toString(sQuote(OutPut)), ");")
+dbExecute(db, SQLq)
+
+options(op)
+dbDisconnect(db)
 
 ####
 # Importance measures
@@ -450,12 +552,12 @@ f.imp <- f.imp[,"MeanDecreaseAccuracy"]
 
 db <- dbConnect(SQLite(),dbname=db_file)  
 # get importance data, set up a data frame
-EnvVars <- data.frame(code = names(f.imp), impVal = f.imp, fullName="", stringsAsFactors = FALSE)
+EnvVars <- data.frame(gridName = names(f.imp), impVal = f.imp, fullName="", stringsAsFactors = FALSE)
 #set the query for the following lookup, note it builds many queries, equal to the number of vars
-SQLquery <- paste("SELECT code, fullName FROM lkpEnvVars WHERE code in ('", paste(EnvVars$code,sep=", "),
+SQLquery <- paste("SELECT gridName, fullName FROM lkpEnvVars WHERE gridName in ('", paste(EnvVars$gridName,sep=", "),
 					"'); ", sep="")
 #cycle through all select statements, put the results in the df
-for(i in 1:length(EnvVars$code)){
+for(i in 1:length(EnvVars$gridName)){
   EnvVars$fullName[i] <- as.character(dbGetQuery(db, statement = SQLquery[i])[,2])
   }
 ##clean up
@@ -475,13 +577,14 @@ for(i in 1:8){
 						names(f.imp[ord[i]]),
 						which.class = 1,
 						plot = FALSE)
-	pPlots[[i]]$code <- names(f.imp[ord[i]])
+	pPlots[[i]]$gridName <- names(f.imp[ord[i]])
 	pPlots[[i]]$fname <- EnvVars$fullName[ord[i]]
+	cat("finished partial plot ", i, " of 8", "\n")
 	}
 
 #save the project, return to the original working directory
 setwd(rdataOut)
 save.image(file = paste(ElementNames$Code, ".Rdata", sep=""))
-setwd(dataLocation)
-cat("done with", ElementNames[[1]], "\n")
+setwd(sppPtLoc)
+
 
