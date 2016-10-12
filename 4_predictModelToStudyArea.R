@@ -12,13 +12,13 @@ library(randomForest)
 #
 
 # directory for the RData files (analysis data)
-rdataLoc <- "X:/RegionalSDM/zz_testArea/zz_testArea/outputs"
+rdataLoc <- "X:/RegionalSDM/zz_testArea/outputs"
 
 # directory for the environmental rasters
-pathToRas <- "X:/RegionalSDM/zz_testArea/zz_testArea/env_vars/nativeR"
+pathToRas <- "X:/RegionalSDM/zz_testArea/env_vars/nativeR"
 
 # output path (best if different from rdataloc)
-outRas <- "X:/RegionalSDM/zz_testArea/zz_testArea/outputs/grids"
+outRas <- "X:/RegionalSDM/zz_testArea/outputs/grids"
 
 # get the customized version of the predict function
 source('X:/RegionalSDM/zz_testArea/scripts/Regional_SDM/RasterPredictMod.R')

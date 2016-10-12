@@ -10,7 +10,7 @@ library(rgdal)
 pathToTifs <- "X:/RegionalSDM/zz_testArea/env_vars/geotiffs"
 
 # the path to write out the brick to
-pathToClipped <- "X:/RegionalSDM/zz_testArea/zz_testArea/env_vars/geotiffs"
+pathToClipped <- "X:/RegionalSDM/zz_testArea/env_vars/geotiffs"
 
 # path to the shape to use for clipping
 pathToClipShape <- "X:/RegionalSDM/zz_testArea/zz_testArea"
@@ -44,7 +44,7 @@ for (i in 1:length(gridlist)){
 
 pathToBackgPts <- "X:/RegionalSDM/zz_testArea/inputs/background"
 backgPts <- "clpBnd_SDM_RanPts"
-outPathBkg <- "X:/RegionalSDM/zz_testArea/zz_testArea/inputs/background"
+outPathBkg <- "X:/RegionalSDM/zz_testArea/inputs/background"
 
 bigArea <- readOGR(pathToBackgPts, backgPts)
 smallArea <- bigArea[clpShp,]
@@ -52,7 +52,7 @@ writeOGR(smallArea, outPathBkg, backgPts, driver="ESRI Shapefile")
 
 pathToPresPts <- "X:/RegionalSDM/zz_testArea/inputs/species/sciranci/point_data"
 presPts <- "sciranci_att"
-outPathPres <- "X:/RegionalSDM/zz_testArea/zz_testArea/inputs/species/sciranci/point_data"
+outPathPres <- "X:/RegionalSDM/zz_testArea/inputs/species/sciranci/point_data"
 
 bigArea <- readOGR(pathToPresPts, presPts)
 smallArea <- bigArea[clpShp,]
@@ -60,7 +60,7 @@ writeOGR(smallArea, outPathPres, presPts, driver="ESRI Shapefile")
 
 pathToPresPolys <- "X:/RegionalSDM/zz_testArea/inputs/species/sciranci/polygon_data"
 presPolys <- "sciranci"
-outPathPres <- "X:/RegionalSDM/zz_testArea/zz_testArea/inputs/species/sciranci/polygon_data"
+outPathPres <- "X:/RegionalSDM/zz_testArea/inputs/species/sciranci/polygon_data"
 
 bigArea <- readOGR(pathToPresPolys, presPolys)
 smallArea <- bigArea[clpShp,]
