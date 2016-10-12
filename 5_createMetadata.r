@@ -14,11 +14,11 @@ library(sp)
 library(rgdal)
 library(RColorBrewer)
 
-inPath <- "D:/RegionalSDM/outputs"
-rnwPath <- "D:/RegionalSDM/scripts/Regional_SDM"
-outPath <- "D:/RegionalSDM/outputs/metadata"
-gridpath <- "D:/RegionalSDM/outputs/grids"
-stateBoundPath <- "D:/RegionalSDM/other_spatial"
+inPath <- "X:/RegionalSDM/zz_testArea/outputs"
+rnwPath <- "X:/RegionalSDM/zz_testArea/scripts/Regional_SDM"
+outPath <- "X:/RegionalSDM/zz_testArea/outputs/metadata"
+gridpath <- "X:/RegionalSDM/zz_testArea/outputs/grids"
+stateBoundPath <- "X:/RegionalSDM/zz_testArea/other_spatial"
 
 ##get a list of what's in the directory
 d <- dir(path = inPath, pattern = ".Rdata",full.names=FALSE)
