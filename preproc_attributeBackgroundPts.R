@@ -5,8 +5,8 @@
 library(raster)
 library(rgdal)
 
-pathToRas <- "D:/RegionalSDM/env_vars/nativeR"
-pathToPts <- "D:/RegionalSDM/inputs/background"
+pathToRas <- "X:/RegionalSDM/zz_testArea/env_vars/nativeR"
+pathToPts <- "X:/RegionalSDM/zz_testArea/inputs/background"
 
 setwd(pathToRas)
 ## create a stack. Note this is using native R rasters
