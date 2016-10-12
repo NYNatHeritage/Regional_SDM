@@ -8,7 +8,7 @@ library(rgeos)
 
 ### This is the location and shapefile that has your species polygon data. 
 polydir <- "X:/RegionalSDM/zz_testArea/inputs/species/sciranci/polygon_data"
-polyFileName <- "sciranci_expl.shp"
+polyFileName <- "scirpustest_expl.shp"
 setwd(polydir)
 
 ### This is the random points shapefile info
