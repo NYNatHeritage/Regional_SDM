@@ -30,10 +30,10 @@ setwd(sppPtLoc)
 rdataOut <- "X:/RegionalSDM/zz_testArea/outputs"
 
 # the names of the files to be uploadeX: presence points
-df.in <-read.dbf("sciranci_att.dbf")
+df.in <-read.dbf("scirpustest_att.dbf")
 
 # absence points
-df.abs <- read.dbf(paste(ranPtLoc,"clpBnd_SDM_RanPt_att.dbf", sep="/"))
+df.abs <- read.dbf(paste(ranPtLoc,"clpBnd_SDM_att.dbf", sep="/"))
 
 #  End, lines that require editing
 #

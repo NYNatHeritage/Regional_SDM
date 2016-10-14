@@ -22,7 +22,7 @@ projInfo <- shapef@proj4string
 nm.RanPtFile <- paste(layer, "_RanPts", sep = "")
 
 # Enter the number of random points you want to generate 
-numpts <- 500000
+numpts <- 10000
 
 # Create the design list
 dsgn <- list(None=list(panel=c(Panel=numpts), seltype="Equal"))
