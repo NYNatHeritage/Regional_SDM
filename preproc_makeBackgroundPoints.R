@@ -5,7 +5,7 @@ library(spsurvey)
 library(rgdal)
 
 # This is the directory that has your study area polygon.
-setwd("D:/RegionalSDM/inputs/background")
+setwd("X:/RegionalSDM/zz_testArea/inputs/background")
 
 # the name of the study area polygon
 StudyAreaPoly <- "clpBnd_SDM.shp"
@@ -25,7 +25,7 @@ projInfo <- shapef@proj4string
 nm.RanPtFile <- paste(layer, "_RanPts", sep = "")
 
 # Enter the number of random points you want to generate 
-numpts <- 500000
+numpts <- 10000
 
 # Create the design list
 dsgn <- list(None=list(panel=c(Panel=numpts), seltype="Equal"))

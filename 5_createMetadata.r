@@ -10,15 +10,19 @@ library(ROCR)  #July 2010: order matters, see http://finzi.psych.upenn.edu/Rhelp
 library(randomForest)
 library(knitr)
 library(raster)
+library(maptools)
 library(sp)
 library(rgdal)
 library(RColorBrewer)
+library(rgdal)
+library(rasterVis)
 
-inPath <- "D:/RegionalSDM/outputs"
-rnwPath <- "D:/RegionalSDM/scripts/Regional_SDM"
-outPath <- "D:/RegionalSDM/outputs/metadata"
-gridpath <- "D:/RegionalSDM/outputs/grids"
-stateBoundPath <- "D:/RegionalSDM/other_spatial"
+
+inPath <- "X:/RegionalSDM/zz_testArea/outputs"
+rnwPath <- "X:/RegionalSDM/zz_testArea/scripts/Regional_SDM"
+outPath <- "X:/RegionalSDM/zz_testArea/outputs/metadata"
+gridpath <- "X:/RegionalSDM/zz_testArea/outputs/grids"
+stateBoundPath <- "X:/RegionalSDM/zz_testArea/other_spatial"
 
 ##get a list of what's in the directory
 d <- dir(path = inPath, pattern = ".Rdata",full.names=FALSE)
@@ -27,23 +31,6 @@ d
 n <- 1
 fileName <- d[[n]]
 load(paste(inPath,fileName, sep="/"))
-
-
-## get the grid so we can plot it
-g <- dir(path = gridpath, pattern = ".tif$", full.names = FALSE)
-g
-# which one?
-n <- 1
-ras <- raster(paste(gridpath, g[[n]], sep = "/"))
-
-bnds <- readOGR(stateBoundPath, "StateBoundariesAlbersConicEqualArea")
-
-# pall <- colorRampPalette(brewer.pal(9,"Blues"))(30)
-# image(ras, col = pall)
-# plot(bnds, add = TRUE)
-
-#spplot(ras, col.regions=pall)
-
 
 ##
 # writing to the same folder as a grid might cause problems.

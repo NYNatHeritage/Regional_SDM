@@ -5,8 +5,8 @@
 library(raster)
 library(rgdal)
 
-pathToRas <- "D:/RegionalSDM/env_vars/nativeR"
-pathToPts <- "D:/RegionalSDM/inputs/background"
+pathToRas <- "X:/RegionalSDM/zz_testArea/env_vars/nativeR"
+pathToPts <- "X:/RegionalSDM/zz_testArea/inputs/background"
 
 setwd(pathToRas)
 ## create a stack. Note this is using native R rasters
@@ -19,7 +19,7 @@ envStack <- stack(gridlist)
 ## Set working directory to the random points location
 setwd(pathToPts)
 
-ranPtsFile <- "clpBnd_SDM_RanPts_clean.shp"
+ranPtsFile <- "clpBnd_SDM_RanPts.shp" #removed a "_clean" from the end ofhte shp name
 ranPtsFileNoExt <- sub(".shp","",ranPtsFile)
 
 ##Read these files into a list of SpatialPoints dataframes
