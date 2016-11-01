@@ -7,13 +7,13 @@ library(raster)
 library(rgdal)
 
 # set this path to the folder where the environmental rasters reside
-pathToTifs <- "D:/RegionalSDM/env_vars/geotiffs"
+pathToTifs <- "X:/RegionalSDM/ScirAnci/env_vars/geotiffs"
 
 # the path to write out the brick to
-pathToClipped <- "D:/RegionalSDM/zz_testArea/env_vars/geotiffs"
+pathToClipped <- "X:/RegionalSDM/ScirAnci/zz_testArea/env_vars/geotiffs"
 
 # path to the shape to use for clipping
-pathToClipShape <- "D:/RegionalSDM/zz_testArea"
+pathToClipShape <- "X:/RegionalSDM/ScirAnci/zz_testArea"
 clipShapeName <- "testAreaGlypMuhl_AlbersUSGS"
 
 clpShp <- readOGR(pathToClipShape,clipShapeName)
@@ -42,25 +42,25 @@ for (i in 1:length(gridlist)){
 
 ### now clip the points to same rectangle
 
-pathToBackgPts <- "D:/RegionalSDM/inputs/background"
+pathToBackgPts <- "X:/RegionalSDM/ScirAnci/inputs/background"
 backgPts <- "clpBnd_SDM_RanPts"
-outPathBkg <- "D:/RegionalSDM/zz_testArea/inputs/background"
+outPathBkg <- "X:/RegionalSDM/ScirAnci/zz_testArea/inputs/background"
 
 bigArea <- readOGR(pathToBackgPts, backgPts)
 smallArea <- bigArea[clpShp,]
 writeOGR(smallArea, outPathBkg, backgPts, driver="ESRI Shapefile")
 
-pathToPresPts <- "D:/RegionalSDM/inputs/species/glypmuhl/point_data"
+pathToPresPts <- "X:/RegionalSDM/ScirAnci/inputs/species/glypmuhl/point_data"
 presPts <- "glypmuhl_att"
-outPathPres <- "D:/RegionalSDM/zz_testArea/inputs/species/glypmuhl/point_data"
+outPathPres <- "X:/RegionalSDM/ScirAnci/zz_testArea/inputs/species/glypmuhl/point_data"
 
 bigArea <- readOGR(pathToPresPts, presPts)
 smallArea <- bigArea[clpShp,]
 writeOGR(smallArea, outPathPres, presPts, driver="ESRI Shapefile")
 
-pathToPresPolys <- "D:/RegionalSDM/inputs/species/glypmuhl/polygon_data"
+pathToPresPolys <- "X:/RegionalSDM/ScirAnci/inputs/species/glypmuhl/polygon_data"
 presPolys <- "glypmuhl"
-outPathPres <- "D:/RegionalSDM/zz_testArea/inputs/species/glypmuhl/polygon_data"
+outPathPres <- "X:/RegionalSDM/ScirAnci/zz_testArea/inputs/species/glypmuhl/polygon_data"
 
 bigArea <- readOGR(pathToPresPolys, presPolys)
 smallArea <- bigArea[clpShp,]

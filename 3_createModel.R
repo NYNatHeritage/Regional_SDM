@@ -19,15 +19,15 @@ library(randomForest)
 #  Lines that require editing
 #
 # directory for file locations
-sppPtLoc <- "D:/RegionalSDM/inputs/species/glypmuhl/point_data"
-ranPtLoc <- "D:/RegionalSDM/inputs/background"
-dbLoc <- "D:/RegionalSDM/databases"
-pathToRas <- "D:/RegionalSDM/env_vars/geotiffs"
+sppPtLoc <- "X:/RegionalSDM/ScirAnci/inputs/species/glypmuhl/point_data"
+ranPtLoc <- "X:/RegionalSDM/ScirAnci/inputs/background"
+dbLoc <- "X:/RegionalSDM/ScirAnci/databases"
+pathToRas <- "X:/RegionalSDM/ScirAnci/env_vars/geotiffs"
 
 setwd(sppPtLoc)
 
 # directory for saving RData files (analysis data)
-rdataOut <- "D:/RegionalSDM/outputs"
+rdataOut <- "X:/RegionalSDM/ScirAnci/outputs"
 
 # the names of the files to be uploaded: presence points
 df.in <-read.dbf("glypmuhl_att.dbf")
