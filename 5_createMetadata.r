@@ -18,11 +18,11 @@ library(rgdal)
 library(rasterVis)
 
 
-inPath <- "D:/RegionalSDM/outputs"
-rnwPath <- "D:/RegionalSDM/scripts/Regional_SDM"
-outPath <- "D:/RegionalSDM/outputs/metadata"
-gridpath <- "D:/RegionalSDM/outputs/grids"
-stateBoundPath <- "D:/RegionalSDM/other_spatial"
+inPath <- "X:/RegionalSDM/ScirAnci/outputs"
+rnwPath <- "X:/RegionalSDM/ScirAnci/scripts/Regional_SDM"
+outPath <- "X:/RegionalSDM/ScirAnci/outputs/metadata"
+gridpath <- "X:/RegionalSDM/ScirAnci/outputs/grids"
+stateBoundPath <- "X:/RegionalSDM/ScirAnci/other_spatial"
 
 extentMapName <- "StatesNE"
 testareapath <- "X:/RegionalSDM/zz_testArea/inputs/background"
