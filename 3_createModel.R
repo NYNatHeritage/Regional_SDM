@@ -19,7 +19,7 @@ library(randomForest)
 #  Lines that require editing
 #
 # directory for file locations
-sppPtLoc <- "X:/RegionalSDM/ScirAnci/inputs/species/glypmuhl/point_data"
+sppPtLoc <- "X:/RegionalSDM/ScirAnci/inputs/species/sciranci/point_data"
 ranPtLoc <- "X:/RegionalSDM/ScirAnci/inputs/background"
 dbLoc <- "X:/RegionalSDM/ScirAnci/databases"
 pathToRas <- "X:/RegionalSDM/ScirAnci/env_vars/geotiffs"
@@ -30,7 +30,7 @@ setwd(sppPtLoc)
 rdataOut <- "X:/RegionalSDM/ScirAnci/outputs"
 
 # the names of the files to be uploaded: presence points
-df.in <-read.dbf("glypmuhl_att.dbf")
+df.in <-read.dbf("sciranci_att.dbf")
 
 # absence points
 df.abs <- read.dbf(paste(ranPtLoc,"clpBnd_SDM_RanPt_att.dbf", sep="/"))

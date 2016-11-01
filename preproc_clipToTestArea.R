@@ -50,17 +50,17 @@ bigArea <- readOGR(pathToBackgPts, backgPts)
 smallArea <- bigArea[clpShp,]
 writeOGR(smallArea, outPathBkg, backgPts, driver="ESRI Shapefile")
 
-pathToPresPts <- "X:/RegionalSDM/ScirAnci/inputs/species/glypmuhl/point_data"
-presPts <- "glypmuhl_att"
-outPathPres <- "X:/RegionalSDM/ScirAnci/zz_testArea/inputs/species/glypmuhl/point_data"
+pathToPresPts <- "X:/RegionalSDM/ScirAnci/inputs/species/sciranci/point_data"
+presPts <- "sciranci_att"
+outPathPres <- "X:/RegionalSDM/ScirAnci/zz_testArea/inputs/species/sciranci/point_data"
 
 bigArea <- readOGR(pathToPresPts, presPts)
 smallArea <- bigArea[clpShp,]
 writeOGR(smallArea, outPathPres, presPts, driver="ESRI Shapefile")
 
-pathToPresPolys <- "X:/RegionalSDM/ScirAnci/inputs/species/glypmuhl/polygon_data"
-presPolys <- "glypmuhl"
-outPathPres <- "X:/RegionalSDM/ScirAnci/zz_testArea/inputs/species/glypmuhl/polygon_data"
+pathToPresPolys <- "X:/RegionalSDM/ScirAnci/inputs/species/sciranci/polygon_data"
+presPolys <- "sciranci"
+outPathPres <- "X:/RegionalSDM/ScirAnci/zz_testArea/inputs/species/sciranci/polygon_data"
 
 bigArea <- readOGR(pathToPresPolys, presPolys)
 smallArea <- bigArea[clpShp,]
