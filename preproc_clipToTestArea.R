@@ -7,14 +7,14 @@ library(raster)
 library(rgdal)
 
 # set this path to the folder where the environmental rasters reside
-pathToTifs <- "X:/RegionalSDM/ScirAnci/env_vars/geotiffs"
+pathToTifs <- "X:/RegionalSDM/env_vars/geotiffs"
 
 # the path to write out the brick to
-pathToClipped <- "X:/RegionalSDM/ScirAnci/zz_testArea/env_vars/geotiffs"
+pathToClipped <- "X:/RegionalSDM/ScirAnci/env_vars/geotiffs"
 
 # path to the shape to use for clipping
-pathToClipShape <- "X:/RegionalSDM/ScirAnci/zz_testArea"
-clipShapeName <- "testAreaGlypMuhl_AlbersUSGS"
+pathToClipShape <- "X:/RegionalSDM/ScirAnci/other_spatial"
+clipShapeName <- "reg5_pred_20161027"
 
 clpShp <- readOGR(pathToClipShape,clipShapeName)
 
