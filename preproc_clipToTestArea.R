@@ -7,14 +7,14 @@ library(raster)
 library(rgdal)
 
 # set this path to the folder where the environmental rasters reside
-pathToTifs <- "X:/RegionalSDM/ScirAnci/env_vars/geotiffs"
+pathToTifs <- "X:/RegionalSDM/env_vars/geotiffs"
 
 # the path to write out the brick to
-pathToClipped <- "X:/RegionalSDM/ScirAnci/zz_testArea/env_vars/geotiffs"
+pathToClipped <- "X:/RegionalSDM/ScirAnci/env_vars/geotiffs"
 
 # path to the shape to use for clipping
-pathToClipShape <- "X:/RegionalSDM/ScirAnci/zz_testArea"
-clipShapeName <- "testAreaGlypMuhl_AlbersUSGS"
+pathToClipShape <- "X:/RegionalSDM/ScirAnci/other_spatial"
+clipShapeName <- "reg5_pred_20161027"
 
 clpShp <- readOGR(pathToClipShape,clipShapeName)
 
@@ -50,17 +50,17 @@ bigArea <- readOGR(pathToBackgPts, backgPts)
 smallArea <- bigArea[clpShp,]
 writeOGR(smallArea, outPathBkg, backgPts, driver="ESRI Shapefile")
 
-pathToPresPts <- "X:/RegionalSDM/ScirAnci/inputs/species/glypmuhl/point_data"
-presPts <- "glypmuhl_att"
-outPathPres <- "X:/RegionalSDM/ScirAnci/zz_testArea/inputs/species/glypmuhl/point_data"
+pathToPresPts <- "X:/RegionalSDM/ScirAnci/inputs/species/sciranci/point_data"
+presPts <- "sciranci_att"
+outPathPres <- "X:/RegionalSDM/ScirAnci/zz_testArea/inputs/species/sciranci/point_data"
 
 bigArea <- readOGR(pathToPresPts, presPts)
 smallArea <- bigArea[clpShp,]
 writeOGR(smallArea, outPathPres, presPts, driver="ESRI Shapefile")
 
-pathToPresPolys <- "X:/RegionalSDM/ScirAnci/inputs/species/glypmuhl/polygon_data"
-presPolys <- "glypmuhl"
-outPathPres <- "X:/RegionalSDM/ScirAnci/zz_testArea/inputs/species/glypmuhl/polygon_data"
+pathToPresPolys <- "X:/RegionalSDM/ScirAnci/inputs/species/sciranci/polygon_data"
+presPolys <- "sciranci"
+outPathPres <- "X:/RegionalSDM/ScirAnci/zz_testArea/inputs/species/sciranci/polygon_data"
 
 bigArea <- readOGR(pathToPresPolys, presPolys)
 smallArea <- bigArea[clpShp,]
