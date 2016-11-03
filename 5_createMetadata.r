@@ -19,7 +19,6 @@ library(rasterVis)
 library(RSQLite)
 
 inPath <- "X:/RegionalSDM/ScirAnci/outputs"
-
 ##get a list of what's in the directory
 
 ## find and load model data ----
@@ -39,10 +38,9 @@ outPath <- "X:/RegionalSDM/ScirAnci/outputs/metadata"
 gridpath <- "X:/RegionalSDM/ScirAnci/outputs/grids"
 stateBoundPath <- "X:/RegionalSDM/ScirAnci/other_spatial"
 extentMapName <- "StatesNE"
-testareapath <- "X:/RegionalSDM/ScirAnci/other_spatial"
-testAreaName <- "reg5_pred_20161027.shp"
+#testareapath <- "X:/RegionalSDM/ScirAnci/other_spatial"
+#testAreaName <- "reg5_pred_20161027.shp"
 ras <- raster(paste(gridpath, "/", ElementNames$Code, ".tif", sep = ""))
-
 
 ## Get Program and Data Sources info ----
 db_file <- paste(dbLoc, "SDM_lookupAndTracking.sqlite", sep = "/")
@@ -79,6 +77,3 @@ dbDisconnect(db)
 setwd(outPath)
 
 knit2pdf(paste(rnwPath,"MetadataEval_knitr.rnw",sep="/"), output=paste(ElementNames$Code, ".tex",sep=""))
-
-
-

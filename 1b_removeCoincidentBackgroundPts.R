@@ -13,7 +13,7 @@ setwd(polydir)
 
 ### This is the random points shapefile info
 ranptsFolder <- "X:/RegionalSDM/ScirAnci/inputs/background"
-ranptsShp <- "clpBnd_SDM_att"
+ranptsShp <- "sdm_att"
 
 # get the poly shapefile
 shpName <- strsplit(polyFileName,"\\.")[[1]][[1]]
