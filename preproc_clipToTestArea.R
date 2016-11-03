@@ -41,10 +41,9 @@ for (i in 1:length(gridlist)){
 
 
 ### now clip the points to same rectangle
-
-pathToBackgPts <- "X:/RegionalSDM/ScirAnci/inputs/background"
-backgPts <- "clpBnd_SDM_RanPts"
-outPathBkg <- "X:/RegionalSDM/ScirAnci/zz_testArea/inputs/background"
+pathToBackgPts <- "X:/RegionalSDM/sdmBackgroundPts_20161031" # master copy
+backgPts <- "sdm_att"
+outPathBkg <- "X:/RegionalSDM/ScirAnci/inputs/background"
 
 bigArea <- readOGR(pathToBackgPts, backgPts)
 smallArea <- bigArea[clpShp,]
