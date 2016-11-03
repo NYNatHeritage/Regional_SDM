@@ -384,6 +384,7 @@ This distribution model would not have been possible without data sharing among 
     \setlength{\parskip}{0pt}
     \setlength{\parsep}{0pt}
 <<DataSourcesList, results="asis", echo = FALSE>>=
+sdm.dataSources$ProgramName <- sort(sdm.dataSources$ProgramName)
 for(i in 1:length(sdm.dataSources$ProgramName)){
   x <- paste("\\item ", sdm.dataSources$ProgramName[[i]], "\n", sep = "")
   y <- sub("&", "\\\\&", x) #escape ampersands if there are any - special character in latex

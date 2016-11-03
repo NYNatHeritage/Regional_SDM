@@ -38,15 +38,13 @@ rnwPath <- "X:/RegionalSDM/ScirAnci/scripts/Regional_SDM"
 outPath <- "X:/RegionalSDM/ScirAnci/outputs/metadata"
 gridpath <- "X:/RegionalSDM/ScirAnci/outputs/grids"
 stateBoundPath <- "X:/RegionalSDM/ScirAnci/other_spatial"
-
 extentMapName <- "StatesNE"
-testareapath <- "X:/RegionalSDM/zz_testArea/inputs/background"
-testAreaName <- "clpBnd_SDM"
+testareapath <- "X:/RegionalSDM/ScirAnci/other_spatial"
+testAreaName <- "reg5_pred_20161027.shp"
 ras <- raster(paste(gridpath, "/", ElementNames$Code, ".tif", sep = ""))
 
 
 ## Get Program and Data Sources info ----
-
 db_file <- paste(dbLoc, "SDM_lookupAndTracking.sqlite", sep = "/")
 db <- dbConnect(SQLite(),dbname=db_file)  
 SQLquery <- paste("Select lkpModelers.ProgramName, lkpModelers.FullOrganizationName, ",
@@ -62,6 +60,7 @@ SQLquery <- paste("SELECT sp.CODE, sr.ProgramName, sr.State ",
   "INNER JOIN lkpDataSources as sr ON mp.DataSourcesID=sr.DataSourcesID ",
   "WHERE sp.CODE='", ElementNames$Code, "'; ", sep="")
 sdm.dataSources <- dbGetQuery(db, statement = SQLquery)
+### actually maybe add the data source sort to the above line
 
 ##clean up
 options(op)
