@@ -326,10 +326,10 @@ shows less land area, a higher cutoff such as that derived from the final model
 
 extentmap <- readOGR(stateBoundPath, extentMapName, stringsAsFactors=FALSE) # name of state boundaries file
 
-testarea <- readOGR(testareapath, testAreaName)
+#testarea <- readOGR(testareapath, testAreaName) # removing this as its probably not needed anymore.
 
 myTheme=rasterTheme(region=brewer.pal('Blues', n=9))
-levelplot(ras, margin=FALSE, at=(0:10)/10, par.settings=rasterTheme(region=brewer.pal('Blues',n=9)), scales=list(draw = FALSE),xlim=c( 1000000, 2300000),ylim=c(1500000, 3100000)) + layer(sp.polygons(extentmap)) + layer(sp.polygons(testarea,lwd=0.1, col='red'))
+levelplot(ras, margin=FALSE, at=(0:10)/10, par.settings=rasterTheme(region=brewer.pal('Blues',n=9)), scales=list(draw = FALSE),xlim=c( 1000000, 2300000),ylim=c(1500000, 3100000)) + layer(sp.polygons(extentmap)) #+ layer(sp.polygons(testarea,lwd=0.1, col='red'))
 
 @
 \includegraphics{figure/mapFig-1.pdf}    
@@ -384,6 +384,7 @@ This distribution model would not have been possible without data sharing among 
     \setlength{\parskip}{0pt}
     \setlength{\parsep}{0pt}
 <<DataSourcesList, results="asis", echo = FALSE>>=
+sdm.dataSources$ProgramName <- sort(sdm.dataSources$ProgramName)
 for(i in 1:length(sdm.dataSources$ProgramName)){
   x <- paste("\\item ", sdm.dataSources$ProgramName[[i]], "\n", sep = "")
   y <- sub("&", "\\\\&", x) #escape ampersands if there are any - special character in latex

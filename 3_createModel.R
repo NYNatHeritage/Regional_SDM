@@ -33,7 +33,7 @@ rdataOut <- "X:/RegionalSDM/ScirAnci/outputs"
 df.in <-read.dbf("sciranci_att.dbf")
 
 # absence points
-df.abs <- read.dbf(paste(ranPtLoc,"clpBnd_SDM_RanPt_att.dbf", sep="/"))
+df.abs <- read.dbf(paste(ranPtLoc,"sdm_att_clean.dbf", sep="/"))
 
 #  End, lines that require editing
 #

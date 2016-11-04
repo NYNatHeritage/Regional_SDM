@@ -4,25 +4,20 @@
 ## start with a fresh workspace with no objects loaded
 library(raster)
 library(rgdal)
-
 library(randomForest)
 
 #####
 #  Lines that require editing
 #
-
 # directory for the RData files (analysis data)
-rdataLoc <- "X:/RegionalSDM/ScirAnci/zz_testArea/outputs"
-
+rdataLoc <- "X:/RegionalSDM/ScirAnci/outputs"
 # directory for the environmental rasters
-pathToRas <- "X:/RegionalSDM/ScirAnci/zz_testArea/env_vars/geotiffs"
-
+pathToRas <- "X:/RegionalSDM/ScirAnci/env_vars/geotiffs"
 # output path (best if different from rdataloc)
-outRas <- "X:/RegionalSDM/ScirAnci/zz_testArea/outputs/grids"
+outRas <- "X:/RegionalSDM/ScirAnci/outputs/grids"
 
 # get the customized version of the predict function
 source('X:/RegionalSDM/ScirAnci/scripts/Regional_SDM/RasterPredictMod.R')
-
 #  End, lines that require editing
 #
 #####
@@ -43,9 +38,7 @@ fullL <- as.list(paste(pathToRas, rasL, sep="/"))
 names(fullL) <- stackOrder
 envStack <- stack(fullL)
 
-
 fileNm <- paste(outRas, ElementNames$Code, sep = "/")
-
 
 outRas <- predictRF(envStack, rf.full, progress="text", index=2, na.rm=TRUE, type="prob", filename=fileNm, format = "GTiff", overwrite=TRUE)
 
