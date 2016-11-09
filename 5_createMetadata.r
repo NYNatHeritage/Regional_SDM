@@ -60,7 +60,6 @@ SQLquery <- paste("SELECT sp.CODE, sr.ProgramName, sr.State ",
 sdm.dataSources <- dbGetQuery(db, statement = SQLquery)
 sdm.dataSources <- sdm.dataSources[order(sdm.dataSources$ProgramName),]
 
-
 ##clean up
 options(op)
 dbDisconnect(db)

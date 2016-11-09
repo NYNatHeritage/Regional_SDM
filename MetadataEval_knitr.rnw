@@ -401,6 +401,10 @@ References
     21(20):3940-3941.
 \end{thebibliography}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
 \normalsize
 
 \noindent
@@ -426,8 +430,7 @@ for(i in 1:length(sdm.dataSources$ProgramName)){
 
 Please cite this document and its associated SDM as: \\
 \hangindent=10pt \Sexpr{sdm.modeler$ProgramName}. \Sexpr{format(Sys.Date(), "%Y")}. Species distribution model for \Sexpr{as.character(ElementNames$CommName)} (\textit{\Sexpr{as.character(ElementNames$SciName)}}). Created on \Sexpr{format(Sys.Date(), "%d %b %Y")}. \Sexpr{sdm.modeler$FullOrganizationName}, \Sexpr{sdm.modeler$City}, \Sexpr{sdm.modeler$State}.
-=======
->>>>>>> 1343e1509d4a59fe2e12c9368ae2c5512c87af9e
+
 
 \end{document}
 
