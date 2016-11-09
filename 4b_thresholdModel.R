@@ -5,10 +5,10 @@
 library(raster)
 library(rgdal)
 
-inPath <- "X:/RegionalSDM/yy_testArea/outputs"
-gridpath <- "X:/RegionalSDM/yy_testArea/outputs/grids"
+inPath <- "X:/RegionalSDM/ScirAnci/outputs"
+gridpath <- "X:/RegionalSDM/ScirAnci/outputs/grids"
 #out path
-outRas <- "X:/RegionalSDM/yy_testArea/outputs/grids" 
+outRas <- "X:/RegionalSDM/ScirAnci/outputs/grids" 
 
 ## find and load model data ----
 # get a list of what's in the directory
