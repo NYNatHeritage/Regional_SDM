@@ -400,31 +400,11 @@ References
     ROCR: visualizing classifier performance in R. Bioinformatics 
     21(20):3940-3941.
 \end{thebibliography}
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
->>>>>>> master
 \normalsize
 
 \noindent
 \medskip
 
-This distribution model would not have been possible without data sharing among organizations. The following organizations provided data:
-\begin{itemize}
-    \setlength{\itemsep}{0pt}
-    \setlength{\parskip}{0pt}
-    \setlength{\parsep}{0pt}
-<<DataSourcesList, results="asis", echo = FALSE>>=
-sdm.dataSources$ProgramName <- sort(sdm.dataSources$ProgramName)
-for(i in 1:length(sdm.dataSources$ProgramName)){
-  x <- paste("\\item ", sdm.dataSources$ProgramName[[i]], "\n", sep = "")
-  y <- sub("&", "\\\\&", x) #escape ampersands if there are any - special character in latex
-  cat(y)
-  #cat(paste("\\item ", sdm.dataSources$ProgramName[[i]], "\n", sep = ""))
-}
-@
-\end{itemize}
 
 
 
