@@ -17,6 +17,7 @@ library(RColorBrewer)
 library(rgdal)
 library(rasterVis)
 library(RSQLite)
+library(xtable)
 
 inPath <- "X:/RegionalSDM/ScirAnci/outputs"
 ##get a list of what's in the directory
