@@ -39,8 +39,8 @@ outPath <- "X:/RegionalSDM/ScirAnci/outputs/metadata"
 gridpath <- "X:/RegionalSDM/ScirAnci/outputs/grids"
 stateBoundPath <- "X:/RegionalSDM/ScirAnci/other_spatial"
 extentMapName <- "StatesNE"
-#testareapath <- "X:/RegionalSDM/ScirAnci/other_spatial"
-#testAreaName <- "reg5_pred_20161027.shp"
+testareapath <- "X:/RegionalSDM/ScirAnci/other_spatial"
+testAreaName <- "reg5_pred_20161027"
 ras <- raster(paste(gridpath, "/", ElementNames$Code, ".tif", sep = ""))
 
 ## Get Program and Data Sources info ----
