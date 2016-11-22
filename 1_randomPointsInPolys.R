@@ -10,7 +10,7 @@ library(rgdal)
 # Assumptions
 # - there is one shapefile for each element in the working directory listed below
 # - the shapefile is named with the species code that is used in the lookup table
-#   e.g. glypmuhl.shp
+#   e.g. sciranci.shp
 # - There is lookup data in the sqlite database to link to other element information (full name, common name, etc.)
 # - the polygon shapefile has at least these fields EO_ID_ST, SNAME, SCOMNAME, RA
 
@@ -19,14 +19,14 @@ library(rgdal)
 ## these are the lines you need to change
 
 ### This is the shapefile that has your species polygon data. 
-polydir <- "D:/RegionalSDM/inputs/species/glypmuhl/polygon_data"
+polydir <- "X:/RegionalSDM/ScirAnci/inputs/species/sciranci/polygon_data"
 setwd(polydir)
 
 ### This is the directory you want the output data (random point shapefile) written to
-outdir <- "D:/RegionalSDM/inputs/species/glypmuhl/point_data"
+outdir <- "X:/RegionalSDM/ScirAnci/inputs/species/sciranci/point_data"
 
 ### This is the full path and name of the information-tracking database
-db_file <- "D:/RegionalSDM/databases/SDM_lookupAndTracking.sqlite"
+db_file <- "X:/RegionalSDM/ScirAnci/databases/SDM_lookupAndTracking.sqlite"
 db <- dbConnect(SQLite(),dbname=db_file)
 
 #get a list of what's in the directory

@@ -9,7 +9,7 @@ library(maptools)
 
 ## Set Working Directory to the rasters location
 # assume you are using native R rasters, tweak if not 
-pathToRas <- "D:/RegionalSDM/env_vars/geotiffs"
+pathToRas <- "X:/RegionalSDM/ScirAnci/env_vars/geotiffs"
 setwd(pathToRas)
 
 ## create a stack (assume you are using native R rasters)
@@ -25,7 +25,7 @@ max(nmLen) # if this result is greater than 10, you've got a renegade
 envStack <- stack(gridlist)
 
 ## Set working directory to the random points location
-setwd("D:/RegionalSDM/inputs/species/glypmuhl/point_data")
+setwd("X:/RegionalSDM/ScirAnci/inputs/species/sciranci/point_data")
 
 ranPtsFiles <- list.files(pattern = ".RanPts.shp$")
 ranPtsFiles
@@ -62,7 +62,7 @@ writeOGR(x, ".", layer=paste(filename), driver="ESRI Shapefile", overwrite_layer
 ## directly. If continuous data, then we can (should) apply bilinear interpolation. 
 
 # ### get categorical/continuous info from the lookup database
-# db_file <- "D:/RegionalSDM/databases/SDM_lookupAndTracking.sqlite"
+# db_file <- "X:/RegionalSDM/ScirAnci/databases/SDM_lookupAndTracking.sqlite"
 # db <- dbConnect(SQLite(),dbname=db_file)
 # # get list of layers, select from the db, put into a dataframe
 # layerList <- paste(names(envStack), collapse = "', '")

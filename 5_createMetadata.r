@@ -19,10 +19,12 @@ library(rasterVis)
 library(RSQLite)
 library(xtable)
 
-inPath <- "G:/RegionalSDM/outputs"
+inPath <- "X:/RegionalSDM/ScirAnci/outputs"
+##get a list of what's in the directory
 
 ## find and load model data ----
 # get a list of what's in the directory
+
 d <- dir(path = inPath, pattern = ".Rdata",full.names=FALSE)
 d
 # which one do we want to run?
@@ -31,21 +33,17 @@ fileName <- d[[n]]
 load(paste(inPath,fileName, sep="/"))
 
 ## set paths (after loading Rdata file in case objects exist) ----
-rnwPath <- "G:/RegionalSDM/scripts/Regional_SDM"
-outPath <- "G:/RegionalSDM/outputs/metadata"
-gridpath <- "G:/RegionalSDM/outputs/grids"
-stateBoundPath <- "G:/RegionalSDM/other_spatial"
-dbLoc <- "G:/RegionalSDM/databases"
-
+dbLoc <- "X:/RegionalSDM/ScirAnci/databases"
+rnwPath <- "X:/RegionalSDM/ScirAnci/scripts/Regional_SDM"
+outPath <- "X:/RegionalSDM/ScirAnci/outputs/metadata"
+gridpath <- "X:/RegionalSDM/ScirAnci/outputs/grids"
+stateBoundPath <- "X:/RegionalSDM/ScirAnci/other_spatial"
 extentMapName <- "StatesNE"
-testareapath <- "G:/RegionalSDM/other_spatial"
+testareapath <- "X:/RegionalSDM/ScirAnci/other_spatial"
 testAreaName <- "reg5_pred_20161027"
-
 ras <- raster(paste(gridpath, "/", ElementNames$Code, ".tif", sep = ""))
 
-
 ## Get Program and Data Sources info ----
-
 db_file <- paste(dbLoc, "SDM_lookupAndTracking.sqlite", sep = "/")
 db <- dbConnect(SQLite(),dbname=db_file)  
 SQLquery <- paste("Select lkpModelers.ProgramName, lkpModelers.FullOrganizationName, ",
@@ -80,6 +78,3 @@ dbDisconnect(db)
 setwd(outPath)
 
 knit2pdf(paste(rnwPath,"MetadataEval_knitr.rnw",sep="/"), output=paste(ElementNames$Code, ".tex",sep=""))
-
-
-

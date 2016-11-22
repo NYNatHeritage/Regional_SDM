@@ -7,13 +7,13 @@ library(sp)
 library(rgeos)
 
 ### This is the location and shapefile that has your species polygon data. 
-polydir <- "D:/RegionalSDM/inputs/species/glypmuhl/polygon_data"
-polyFileName <- "glypmuhl_expl.shp"
+polydir <- "X:/RegionalSDM/ScirAnci/inputs/species/sciranci/polygon_data"
+polyFileName <- "sciranci_expl.shp"
 setwd(polydir)
 
 ### This is the random points shapefile info
-ranptsFolder <- "D:/RegionalSDM/inputs/background"
-ranptsShp <- "clpBnd_SDM_att"
+ranptsFolder <- "X:/RegionalSDM/ScirAnci/inputs/background"
+ranptsShp <- "sdm_att"
 
 # get the poly shapefile
 shpName <- strsplit(polyFileName,"\\.")[[1]][[1]]
