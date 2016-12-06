@@ -230,30 +230,41 @@ abs.dat <- subset(df.full, pres==0)
 
 for (plotpi in 1:8){
     par(mar=c(3,2,0,0.5))
-  	if(is.character(pPlots[[plotpi]]$x)){
+  if(is.character(pPlots[[plotpi]]$x)){
 		barplot(pPlots[[plotpi]]$y, width=rep(1, length(pPlots[[plotpi]]$y)), col="grey",
                               xlab = pPlots[[plotpi]]$fname, ylab = NA,
                               names.arg=pPlots[[plotpi]]$x, space=0.1,
 							  cex.names=0.7, las=2)	
-	plot(1,1,axes=FALSE, type="n", xlab=NA, ylab=NA) #skip density plots if pPlot is barplot
+	  plot(1,1,axes=FALSE, type="n", xlab=NA, ylab=NA) #skip density plots if pPlot is barplot
 	} else {
-	plot(pPlots[[plotpi]]$x, pPlots[[plotpi]]$y,
-		type = "l",
-		xlab = pPlots[[plotpi]]$fname, ylab=NA)
-	pres.dens <- density(pres.dat[,pPlots[[plotpi]]$gridName])
-	abs.dens <- density(abs.dat[,pPlots[[plotpi]]$gridName])
-	par(mar=c(0,2,0.5,0.5))
-	plot(pres.dens, xlim=c(min(pPlots[[plotpi]]$x), 
-					max(pPlots[[plotpi]]$x)),
-					ylim=c(0,max(c(abs.dens$y,pres.dens$y))),
-					main=NA,xlab=NA,ylab=NA,
-					axes=FALSE, col="blue", lwd=2
-					)
-	lines(abs.dens, col="red")
+	  # plot only range of presence points
+  	xmini <- min(pres.dat[,pPlots[[plotpi]]$gridName])
+    xmaxi <- max(pres.dat[,pPlots[[plotpi]]$gridName])
+    # to get full range (range of absence pts) uncomment these
+    #xmini <- min(abs.dat[,pPlots[[plotpi]]$gridName])
+    #xmaxi <- max(abs.dat[,pPlots[[plotpi]]$gridName])
+    xrange <- c(xmini,xmaxi)
+  	# could use quantiles to get rid of outliers and show primary part of x range
+  	#xrange <- quantile(pres.dat[,pPlots[[plotpi]]$gridName], probs = c(0.001, 0.999))
+    print(paste(pPlots[[plotpi]]$gridName, xmini, xmaxi, xrange[1],xrange[2],sep=", "))
+  	plot(pPlots[[plotpi]]$x, pPlots[[plotpi]]$y,
+  		type = "l",
+  		xlab = pPlots[[plotpi]]$fname, ylab=NA,xlim = xrange)
+  		#xlim = c(xmini, xmaxi))
+  	pres.dens <- density(pres.dat[,pPlots[[plotpi]]$gridName])
+  	abs.dens <- density(abs.dat[,pPlots[[plotpi]]$gridName])
+  	par(mar=c(0,2,0.5,0.5))
+  	plot(pres.dens, xlim = xrange,
+  					ylim=c(0,max(c(abs.dens$y,pres.dens$y))),
+  					main=NA,xlab=NA,ylab=NA,
+  					axes=FALSE, col="blue", lwd=2
+  					)
+  	lines(abs.dens, col="red")
 	}
 }
   mtext("log of fraction of votes", side = 2, line = -2, outer=TRUE, cex = 0.7)
 @
+
 \includegraphics{figure/pPlotFig-1.pdf} \\   %place them, then line break
 Figure 3. Partial dependence plots for the eight environmental variables with the 
 most influence on the model. Each plot shows the effect 

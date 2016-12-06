@@ -551,7 +551,7 @@ for(i in 1:8){
 	pPlots[[i]] <- partialPlot(rf.full, df.full[,indVarCols],
 						names(f.imp[ord[i]]),
 						which.class = 1,
-						plot = FALSE)
+						plot = FALSE, n.pt = 101)
 	pPlots[[i]]$gridName <- names(f.imp[ord[i]])
 	pPlots[[i]]$fname <- EnvVars$fullName[ord[i]]
 	cat("finished partial plot ", i, " of 8", "\n")
