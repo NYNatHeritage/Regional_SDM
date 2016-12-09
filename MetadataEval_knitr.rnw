@@ -238,7 +238,9 @@ for (plotpi in 1:8){
 	  plot(1,1,axes=FALSE, type="n", xlab=NA, ylab=NA) #skip density plots if pPlot is barplot
 	} else {
 	  # plot only range of presence points
-  	xmini <- min(pres.dat[,pPlots[[plotpi]]$gridName])
+    abs.min <- min(abs.dat[,pPlots[[plotpi]]$gridName])
+  	abs.max <- max(abs.dat[,pPlots[[plotpi]]$gridName])
+	  xmini <- min(pres.dat[,pPlots[[plotpi]]$gridName])
     xmaxi <- max(pres.dat[,pPlots[[plotpi]]$gridName])
     # to get full range (range of absence pts) uncomment these
     #xmini <- min(abs.dat[,pPlots[[plotpi]]$gridName])
@@ -246,23 +248,29 @@ for (plotpi in 1:8){
     xrange <- c(xmini,xmaxi)
   	# could use quantiles to get rid of outliers and show primary part of x range
   	#xrange <- quantile(pres.dat[,pPlots[[plotpi]]$gridName], probs = c(0.001, 0.999))
-    print(paste(pPlots[[plotpi]]$gridName, xmini, xmaxi, xrange[1],xrange[2],sep=", "))
-  	plot(pPlots[[plotpi]]$x, pPlots[[plotpi]]$y,
-  		type = "l",
-  		xlab = pPlots[[plotpi]]$fname, ylab=NA,xlim = xrange)
+    #print(paste(pPlots[[plotpi]]$gridName, xmini, xmaxi, xrange[1],xrange[2],sep=", "))
+    ##### caculate gap: from xmax to 1/10 of ymax
+    # get 1/10 full range of abs
+    minSecondSection <- abs.max - (abs.max-abs.min)/30
+    
+  	gap.plot(pPlots[[plotpi]]$x, pPlots[[plotpi]]$y,
+  	 gap.axis = "x", gap = c(xmaxi, minSecondSection),
+  		type = "l", xlim = c(abs.min, abs.max),
+  		xlab = pPlots[[plotpi]]$fname, ylab=NA)
+  	 #xlim = xrange)
   		#xlim = c(xmini, xmaxi))
   	pres.dens <- density(pres.dat[,pPlots[[plotpi]]$gridName])
   	abs.dens <- density(abs.dat[,pPlots[[plotpi]]$gridName])
   	par(mar=c(0,2,0.5,0.5))
-  	plot(pres.dens, xlim = xrange,
-  					ylim=c(0,max(c(abs.dens$y,pres.dens$y))),
-  					main=NA,xlab=NA,ylab=NA,
-  					axes=FALSE, col="blue", lwd=2
+  	gap.plot(pres.dens$x, pres.dens$y,
+  	         gap.axis = "x", gap = c(xmaxi, minSecondSection),
+  								main=NA,xlab=NA,ylab=NA,
+  					col="blue", lwd=2, type = "l", xlim = c(abs.min, abs.max)
   					)
-  	lines(abs.dens, col="red")
-  	abs.min <- min(abs.dat[,pPlots[[plotpi]]$gridName])
-  	abs.max <- max(abs.dat[,pPlots[[plotpi]]$gridName])
-  	
+  	# xlim = xrange, ylim=c(0,max(c(abs.dens$y,pres.dens$y))),
+  	#lines(abs.dens, col="red")
+  	#mtext(abs.min, side = 3, line = -1, adj = 1, cex = 0.6)
+  	#mtext(abs.max, side = 3, line = -2, adj = 1, cex = 0.6)
 	}
 }
   mtext("log of fraction of votes", side = 2, line = -2, outer=TRUE, cex = 0.7)
@@ -273,7 +281,7 @@ Figure 3. Partial dependence plots for the eight environmental variables with th
 most influence on the model. Each plot shows the effect 
 of the variable on the probability of appropriate habitat with the 
 effects of the other variables removed \cite{liaw2002}. Higher values in the black line indicate where this variable is associated with 
-appropriate habitat (positive marginal effect on outcome). The distribution of each category (thin red = BG points, thick blue = PR points) is depicted at the top margin. 
+appropriate habitat. The density distribution of each category (thin red = BG points, thick blue = PR points) is depicted at the top margin, within the range (min and max) of the PR points. The entire range of BG points may be larger; this range is depicted in the upper right corner of each figure.
 
 \medskip
 \noindent
