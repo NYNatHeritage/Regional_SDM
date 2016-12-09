@@ -21,6 +21,10 @@ library(xtable)
 library(plotrix)
 #library(ggplot2)
 
+#scripts folder
+scripts <- "G:/RegionalSDM/scripts/Regional_SDM"
+source(paste(scripts, "GapPlotMod.r", sep = "/"))
+
 inPath <- "G:/RegionalSDM/outputs"
 
 ## find and load model data ----
@@ -80,6 +84,7 @@ dbDisconnect(db)
 
 # Also, might need to run this twice. First time through tex builds the reference
 # list, second time through it can then number the refs in the doc.
+
 
 setwd(outPath)
 

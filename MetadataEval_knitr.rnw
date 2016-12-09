@@ -237,38 +237,74 @@ for (plotpi in 1:8){
 							  cex.names=0.7, las=2)	
 	  plot(1,1,axes=FALSE, type="n", xlab=NA, ylab=NA) #skip density plots if pPlot is barplot
 	} else {
-	  # plot only range of presence points
+	  # get min, max of absence data
     abs.min <- min(abs.dat[,pPlots[[plotpi]]$gridName])
   	abs.max <- max(abs.dat[,pPlots[[plotpi]]$gridName])
-	  xmini <- min(pres.dat[,pPlots[[plotpi]]$gridName])
-    xmaxi <- max(pres.dat[,pPlots[[plotpi]]$gridName])
-    # to get full range (range of absence pts) uncomment these
-    #xmini <- min(abs.dat[,pPlots[[plotpi]]$gridName])
-    #xmaxi <- max(abs.dat[,pPlots[[plotpi]]$gridName])
-    xrange <- c(xmini,xmaxi)
-  	# could use quantiles to get rid of outliers and show primary part of x range
-  	#xrange <- quantile(pres.dat[,pPlots[[plotpi]]$gridName], probs = c(0.001, 0.999))
-    #print(paste(pPlots[[plotpi]]$gridName, xmini, xmaxi, xrange[1],xrange[2],sep=", "))
-    ##### caculate gap: from xmax to 1/10 of ymax
-    # get 1/10 full range of abs
-    minSecondSection <- abs.max - (abs.max-abs.min)/30
+	  # get min, max of presence data
+  	p.min <- min(pres.dat[,pPlots[[plotpi]]$gridName])
+    p.max <- max(pres.dat[,pPlots[[plotpi]]$gridName])
+    xrange <- c(p.min,p.max)
+    # chop the partial plot data
+    pplot.x <- pPlots[[plotpi]]$x[pPlots[[plotpi]]$x > p.min & pPlots[[plotpi]]$x < p.max]
+    pplot.y <- pPlots[[plotpi]]$y[pPlots[[plotpi]]$x > p.min & pPlots[[plotpi]]$x < p.max]
     
-  	gap.plot(pPlots[[plotpi]]$x, pPlots[[plotpi]]$y,
-  	 gap.axis = "x", gap = c(xmaxi, minSecondSection),
+    #plot(pPlots[[plotpi]]$x, pPlots[[plotpi]]$y, type = "l")
+    
+    needTopGap <- FALSE
+    # do we need a gap at top?
+    if(abs.max > p.max){
+      needTopGap <- TRUE
+      # get 1/30 full range of abs
+      minTopEnd <- abs.max - (abs.max-abs.min)/30
+      if(minTopEnd < p.max){
+        minTopEnd <- abs.max - (abs.max-p.max)*0.2
+      }
+      topGap <- c(p.max, minTopEnd)
+    }
+    needBottomGap <- FALSE
+    if(p.min > abs.min){
+      needBottomGap <- TRUE
+      maxBottomEnd <- abs.min + (abs.max-abs.min)/30
+      if(maxBottomEnd > p.min){
+        maxBottomEnd <- abs.min + (p.min - abs.min)*0.2
+      }
+      bottomGap <- c(maxBottomEnd, p.min)
+    }
+
+    if(needBottomGap & needTopGap){
+      gaps <- c(bottomGap, topGap)
+    } else if(needBottomGap){
+      gaps <- bottomGap
+    } else if(needTopGap){
+      gaps <- topGap
+    } else { gaps <- NA}
+    
+    ## calculate gap at bottom
+    
+
+  	# tgh.gap.plot(pplot.x, pplot.y,
+  	#  gap.axis = "x", gap = gaps,
+  	# 	type = "l", xlim = c(abs.min, abs.max))    
+        
+  	tgh.gap.plot(pplot.x, pplot.y,
+  	 gap.axis = "x", gap = gaps,
   		type = "l", xlim = c(abs.min, abs.max),
   		xlab = pPlots[[plotpi]]$fname, ylab=NA)
-  	 #xlim = xrange)
-  		#xlim = c(xmini, xmaxi))
+
   	pres.dens <- density(pres.dat[,pPlots[[plotpi]]$gridName])
   	abs.dens <- density(abs.dat[,pPlots[[plotpi]]$gridName])
   	par(mar=c(0,2,0.5,0.5))
   	gap.plot(pres.dens$x, pres.dens$y,
-  	         gap.axis = "x", gap = c(xmaxi, minSecondSection),
+  	         gap.axis = "x", gap = gaps,
   								main=NA,xlab=NA,ylab=NA,
   					col="blue", lwd=2, type = "l", xlim = c(abs.min, abs.max)
   					)
-  	# xlim = xrange, ylim=c(0,max(c(abs.dens$y,pres.dens$y))),
-  	#lines(abs.dens, col="red")
+
+  	gap.plot(abs.dens$x, abs.dens$y,
+  	         gap.axis = "x", gap = gaps,
+  								main=NA,xlab=NA,ylab=NA,
+  					col="red", lwd=2, type = "l", xlim = c(abs.min, abs.max),
+  					add = TRUE)
   	#mtext(abs.min, side = 3, line = -1, adj = 1, cex = 0.6)
   	#mtext(abs.max, side = 3, line = -2, adj = 1, cex = 0.6)
 	}
