@@ -231,11 +231,12 @@ abs.dat <- subset(df.full, pres==0)
 for (plotpi in 1:8){
     par(mar=c(3,2,0,0.5))
   if(is.character(pPlots[[plotpi]]$x)){
+    # legacy for factored env vars. There are non in Regional project
 		barplot(pPlots[[plotpi]]$y, width=rep(1, length(pPlots[[plotpi]]$y)), col="grey",
                               xlab = pPlots[[plotpi]]$fname, ylab = NA,
                               names.arg=pPlots[[plotpi]]$x, space=0.1,
 							  cex.names=0.7, las=2)	
-	  plot(1,1,axes=FALSE, type="n", xlab=NA, ylab=NA) #skip density plots if pPlot is barplot
+	  plot(1,1,axes=FALSE, type="n", xlab=NA, ylab=NA)
 	} else {
 	  # get min, max of absence data
     abs.min <- min(abs.dat[,pPlots[[plotpi]]$gridName])
@@ -243,12 +244,10 @@ for (plotpi in 1:8){
 	  # get min, max of presence data
   	p.min <- min(pres.dat[,pPlots[[plotpi]]$gridName])
     p.max <- max(pres.dat[,pPlots[[plotpi]]$gridName])
-    xrange <- c(p.min,p.max)
+    #xrange <- c(p.min,p.max)
     # chop the partial plot data
     pplot.x <- pPlots[[plotpi]]$x[pPlots[[plotpi]]$x > p.min & pPlots[[plotpi]]$x < p.max]
     pplot.y <- pPlots[[plotpi]]$y[pPlots[[plotpi]]$x > p.min & pPlots[[plotpi]]$x < p.max]
-    
-    #plot(pPlots[[plotpi]]$x, pPlots[[plotpi]]$y, type = "l")
     
     needTopGap <- FALSE
     # do we need a gap at top?
@@ -277,7 +276,7 @@ for (plotpi in 1:8){
       gaps <- bottomGap
     } else if(needTopGap){
       gaps <- topGap
-    } else { gaps <- NA}
+    } else { gaps <- c(abs.max, abs.max)}
     
     ## calculate gap at bottom
     
@@ -293,18 +292,22 @@ for (plotpi in 1:8){
 
   	pres.dens <- density(pres.dat[,pPlots[[plotpi]]$gridName])
   	abs.dens <- density(abs.dat[,pPlots[[plotpi]]$gridName])
+    # chop the density data
+    p.dens.x <- pres.dens$x[pres.dens$x > p.min & pres.dens$x < p.max]
+    p.dens.y <- pres.dens$y[pres.dens$x > p.min & pres.dens$x < p.max]
+    
   	par(mar=c(0,2,0.5,0.5))
-  	gap.plot(pres.dens$x, pres.dens$y,
+  	tgh.gap.plot(p.dens.x, p.dens.y,
   	         gap.axis = "x", gap = gaps,
-  								main=NA,xlab=NA,ylab=NA,
-  					col="blue", lwd=2, type = "l", xlim = c(abs.min, abs.max)
+  								main=NA,xlab=NA,ylab=NA,xtics = NA,ytics = NA,xticlab = NA,yticlab = NA,
+  					col="blue", lwd=2, type = "l", xlim = c(abs.min, abs.max), ylim=c(0,max(c(abs.dens$y,pres.dens$y)))
   					)
 
   	gap.plot(abs.dens$x, abs.dens$y,
   	         gap.axis = "x", gap = gaps,
-  								main=NA,xlab=NA,ylab=NA,
-  					col="red", lwd=2, type = "l", xlim = c(abs.min, abs.max),
-  					add = TRUE)
+  								main=NA,xlab=NA,ylab=NA,xtics = NA,ytics = NA, xticlab = NA,yticlab = NA,
+  					col="red", lwd=1, type = "l", xlim = c(abs.min, abs.max),
+  					add = TRUE, ylim=c(0,max(c(abs.dens$y,pres.dens$y))))
   	#mtext(abs.min, side = 3, line = -1, adj = 1, cex = 0.6)
   	#mtext(abs.max, side = 3, line = -2, adj = 1, cex = 0.6)
 	}

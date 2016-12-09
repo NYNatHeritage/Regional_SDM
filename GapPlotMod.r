@@ -56,11 +56,11 @@ function (x, y, gap, gap.axis = "y", bgcol = "white", breakcol = "black",
     else {
         littleones <- which(x < gap[1])
         if (length(gap) > 3) {
-			# print(paste("x =", x))
-			# print(paste("gap[2]=",gap[2]))
-			# print(paste("xgw =",xgw))
-			# print(paste("gap[3]=",gap[3]))
-			# print(paste("gap[4]=",gap[4]))
+			 #print(paste("x =", x))
+			 # print(paste("gap[2]=",gap[2]))
+			 # print(paste("xgw =",xgw))
+			 # print(paste("gap[3]=",gap[3]))
+			 # print(paste("gap[4]=",gap[4]))
 			## tgh added subsetting brackets "[]" to all xgw objects
             middleones <- which(x >= gap[2] + xgw[1] & x < gap[3])
             bigones <- which(x >= gap[4] + xgw[2])
@@ -168,9 +168,10 @@ function (x, y, gap, gap.axis = "y", bgcol = "white", breakcol = "black",
                 axis(2, at = ytics, labels = yticlab)
             littletics <- which(xtics < gap[1])
             if (length(gapsize) > 2) {
-                middletics <- which(xtics >= gap[2] + xgw & xtics <= 
+				#print(paste("in gapsize gt 2; xgw =",xgw))
+                middletics <- which(xtics >= gap[2] + xgw[1] & xtics <= 
                   gap[3])
-                bigtics <- which(xtics > gap[4] + xgw)
+                bigtics <- which(xtics > gap[4] + xgw[2])
                 show.at <- c(xtics[littletics], xtics[middletics] - 
                   gapsize[1], xtics[bigtics] - (gapsize[1] + 
                   gapsize[3]))
@@ -178,7 +179,7 @@ function (x, y, gap, gap.axis = "y", bgcol = "white", breakcol = "black",
                   xticlab[bigtics])
             }
             else {
-                bigtics <- which(xtics > gap[2] + xgw)
+                bigtics <- which(xtics > gap[2] + xgw[1])
                 show.at <- c(xtics[littletics], xtics[bigtics] - 
                   gapsize[1])
                 show.labels <- c(xticlab[littletics], xticlab[bigtics])
