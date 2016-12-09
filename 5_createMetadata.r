@@ -18,6 +18,7 @@ library(rgdal)
 library(rasterVis)
 library(RSQLite)
 library(xtable)
+library(plotrix)
 #library(ggplot2)
 
 inPath <- "G:/RegionalSDM/outputs"
