@@ -548,11 +548,15 @@ pPlots <- vector("list",8)
 		names(pPlots) <- c(1:8)
 #get the top eight partial plots
 for(i in 1:8){
-	pPlots[[i]] <- partialPlot(rf.full, df.full[,indVarCols],
-						names(f.imp[ord[i]]),
-						which.class = 1,
-						plot = FALSE, n.pt = 101)
-	pPlots[[i]]$gridName <- names(f.imp[ord[i]])
+  varName <- names(f.imp[ord[i]])
+  presRange <- range(df.full[df.full$pres == 1,varName])
+  #do partial plots only where we have pres points
+	pPlots[[i]] <- partialPlot(x = rf.full, 
+	    pred.data = df.full[df.full[,varName] >= presRange[1] & df.full[,varName] <= presRange[2] ,indVarCols],
+	    x.var = varName[[1]],
+      which.class = 1,
+			plot = FALSE, n.pt = 31)
+	pPlots[[i]]$gridName <- varName[[1]]
 	pPlots[[i]]$fname <- EnvVars$fullName[ord[i]]
 	cat("finished partial plot ", i, " of 8", "\n")
 	}
