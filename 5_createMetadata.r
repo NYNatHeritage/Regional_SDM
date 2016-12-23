@@ -33,7 +33,7 @@ inPath <- "G:/RegionalSDM/outputs"
 d <- dir(path = inPath, pattern = ".Rdata",full.names=FALSE)
 d
 # which one do we want to run?
-n <- 1
+n <- 2
 fileName <- d[[n]]
 load(paste(inPath,fileName, sep="/"))
 
