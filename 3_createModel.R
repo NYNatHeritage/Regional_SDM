@@ -555,7 +555,7 @@ for(i in 1:8){
 	    pred.data = df.full[df.full[,varName] >= presRange[1] & df.full[,varName] <= presRange[2] ,indVarCols],
 	    x.var = varName[[1]],
       which.class = 1,
-			plot = FALSE, n.pt = 31)
+			plot = FALSE, n.pt = 51)
 	pPlots[[i]]$gridName <- varName[[1]]
 	pPlots[[i]]$fname <- EnvVars$fullName[ord[i]]
 	cat("finished partial plot ", i, " of 8", "\n")
@@ -563,5 +563,6 @@ for(i in 1:8){
 
 #save the project, return to the original working directory
 setwd(rdataOut)
-save.image(file = paste(ElementNames$Code, ".Rdata", sep=""))
+setwd("G:/RegionalSDM/outputs")
+save.image(file = paste(ElementNames$Code, "_newPP.Rdata", sep=""))
 setwd(sppPtLoc)
