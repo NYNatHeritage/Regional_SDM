@@ -231,7 +231,7 @@ abs.dat <- subset(df.full, pres==0)
 for (plotpi in 1:8){
     par(mar=c(3,2,0,0.5))
   if(is.character(pPlots[[plotpi]]$x)){
-    # legacy for factored env vars. There are non in Regional project
+    # legacy for factored env vars. There are none in Regional project
 		barplot(pPlots[[plotpi]]$y, width=rep(1, length(pPlots[[plotpi]]$y)), col="grey",
                               xlab = pPlots[[plotpi]]$fname, ylab = NA,
                               names.arg=pPlots[[plotpi]]$x, space=0.1,
@@ -246,8 +246,8 @@ for (plotpi in 1:8){
     p.max <- max(pres.dat[,pPlots[[plotpi]]$gridName])
     #xrange <- c(p.min,p.max)
     # chop the partial plot data
-    pplot.x <- pPlots[[plotpi]]$x[pPlots[[plotpi]]$x > p.min & pPlots[[plotpi]]$x < p.max]
-    pplot.y <- pPlots[[plotpi]]$y[pPlots[[plotpi]]$x > p.min & pPlots[[plotpi]]$x < p.max]
+    pplot.x <- pPlots[[plotpi]]$x[pPlots[[plotpi]]$x >= p.min & pPlots[[plotpi]]$x <= p.max]
+    pplot.y <- pPlots[[plotpi]]$y[pPlots[[plotpi]]$x >= p.min & pPlots[[plotpi]]$x <= p.max]
     
     needTopGap <- FALSE
     # do we need a gap at top?
@@ -284,23 +284,30 @@ for (plotpi in 1:8){
   	# tgh.gap.plot(pplot.x, pplot.y,
   	#  gap.axis = "x", gap = gaps,
   	# 	type = "l", xlim = c(abs.min, abs.max))    
-        
+    xticlocs <- c(abs.min, p.min, p.max, abs.max)
   	tgh.gap.plot(pplot.x, pplot.y,
   	 gap.axis = "x", gap = gaps,
   		type = "l", xlim = c(abs.min, abs.max),
+  	 xtics = xticlocs,
   		xlab = pPlots[[plotpi]]$fname, ylab=NA)
-
+    
   	pres.dens <- density(pres.dat[,pPlots[[plotpi]]$gridName])
   	abs.dens <- density(abs.dat[,pPlots[[plotpi]]$gridName])
     # chop the density data
-    p.dens.x <- pres.dens$x[pres.dens$x > p.min & pres.dens$x < p.max]
-    p.dens.y <- pres.dens$y[pres.dens$x > p.min & pres.dens$x < p.max]
-    
+    #p.dens.x <- pres.dens$x[pres.dens$x >= p.min & pres.dens$x <= p.max]
+    #p.dens.y <- pres.dens$y[pres.dens$x >= p.min & pres.dens$x <= p.max]
+    p.dens.x <- pres.dens$x
+    p.dens.y <- pres.dens$y
+  	
+  	
   	par(mar=c(0,2,0.5,0.5))
-  	tgh.gap.plot(p.dens.x, p.dens.y,
-  	         gap.axis = "x", gap = gaps,
-  								main=NA,xlab=NA,ylab=NA,xtics = NA,ytics = NA,xticlab = NA,yticlab = NA,
-  					col="blue", lwd=2, type = "l", xlim = c(abs.min, abs.max), ylim=c(0,max(c(abs.dens$y,pres.dens$y)))
+  	  	#tgh.gap.plot(p.dens.x, p.dens.y,
+  	gap.plot(p.dens.x, p.dens.y,
+  	        gap.axis = "x", gap = gaps,
+  					main=NA,xlab=NA,ylab=NA,xtics = c(min(p.dens.x),max(p.dens.x)),
+  					ytics = c(min(p.dens.y), max(p.dens.y)),xticlab = NA,yticlab = NA,
+  					col="blue", lwd=2, type = "l", xlim = c(abs.min, abs.max), 
+  					ylim=c(0,max(c(abs.dens$y,pres.dens$y)))
   					)
 
   	gap.plot(abs.dens$x, abs.dens$y,
