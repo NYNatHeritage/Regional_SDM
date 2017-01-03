@@ -563,6 +563,5 @@ for(i in 1:8){
 
 #save the project, return to the original working directory
 setwd(rdataOut)
-setwd("G:/RegionalSDM/outputs")
 save.image(file = paste(ElementNames$Code, "_newPP.Rdata", sep=""))
 setwd(sppPtLoc)
