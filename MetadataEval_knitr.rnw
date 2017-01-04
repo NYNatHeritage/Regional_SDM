@@ -298,7 +298,7 @@ for (plotpi in 1:8){
   		type = "l", xlim = c(abs.min, abs.max),
   	 xtics = xticlocs,
   		xlab = pPlots[[plotpi]]$fname, ylab=NA,
-  	 cex.axis = 0.1)
+  	 cex.axis = 0.7)
     
   	pres.dens <- density(pres.dat[,pPlots[[plotpi]]$gridName])
   	abs.dens <- density(abs.dat[,pPlots[[plotpi]]$gridName])

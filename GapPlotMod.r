@@ -2,7 +2,8 @@ tgh.gap.plot <-
 function (x, y, gap, gap.axis = "y", bgcol = "white", breakcol = "black", 
     brw = 0.02, xlim = range(x), ylim = range(y), xticlab, xtics = NA, 
     yticlab, ytics = NA, lty = rep(1, length(x)), col = rep(par("col"), 
-        length(x)), pch = rep(1, length(x)), add = FALSE, stax = FALSE, 
+        length(x)), pch = rep(1, length(x)), add = FALSE, stax = FALSE, cex.axis = 0.6,
+    addBox = TRUE,
     ...) 
 {
     if (missing(y) && !missing(x)) {
@@ -121,7 +122,7 @@ function (x, y, gap, gap.axis = "y", bgcol = "white", breakcol = "black",
         plot(x[littleones], y[littleones], xlim = xlim, ylim = ylim, 
             axes = FALSE, lty = lty[littleones], col = col[littleones], 
             pch = pch[littleones], ...)
-        box()
+        if(addBox) box()
         if (gap.axis == "y") {
             if (!is.na(xtics[1])) 
                 axis(1, at = xtics, labels = xticlab)
@@ -143,10 +144,10 @@ function (x, y, gap, gap.axis = "y", bgcol = "white", breakcol = "black",
                 show.labels <- c(ytics[littletics], yticlab[bigtics])
             }
             if (stax) {
-                axis(2, at = show.at, labels = rep("", length(show.labels)))
-                staxlab(2, at = show.at, labels = show.labels)
+                axis(2, at = show.at, labels = rep("", length(show.labels)), cex.axis = cex.axis) 
+                staxlab(2, at = show.at, labels = show.labels, cex.axis = cex.axis)
             }
-            else axis(2, at = show.at, labels = show.labels)
+            else axis(2, at = show.at, labels = show.labels, cex.axis = cex.axis)
             axis.break(2, gap[1], style = "gap", bgcol = bgcol, 
                 breakcol = breakcol, brw = brw)
             if (length(gapsize) > 2) {
@@ -165,7 +166,7 @@ function (x, y, gap, gap.axis = "y", bgcol = "white", breakcol = "black",
         }
         else {
             if (!is.na(ytics[1])) 
-                axis(2, at = ytics, labels = yticlab)
+                axis(2, at = ytics, labels = yticlab, cex.axis = cex.axis)
             littletics <- which(xtics < gap[1])
             if (length(gapsize) > 2) {
 				#print(paste("in gapsize gt 2; xgw =",xgw))
@@ -185,10 +186,10 @@ function (x, y, gap, gap.axis = "y", bgcol = "white", breakcol = "black",
                 show.labels <- c(xticlab[littletics], xticlab[bigtics])
             }
             if (stax) {
-                axis(1, at = show.at, labels = rep("", length(show.labels)))
-                staxlab(1, at = show.at, labels = show.labels)
+                axis(1, at = show.at, labels = rep("", length(show.labels)), cex.axis = cex.axis)
+                staxlab(1, at = show.at, labels = show.labels, cex.axis = cex.axis)
             }
-            else axis(1, at = show.at, labels = show.labels)
+            else axis(1, at = show.at, labels = show.labels, cex.axis = cex.axis)
             axis.break(1, gap[1], style = "gap")
             if (length(gapsize) > 2) {
                 axis.break(1, gap[3] - gapsize[1], style = "gap")
